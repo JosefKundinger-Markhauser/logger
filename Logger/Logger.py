@@ -61,8 +61,10 @@ class Logger:
         return timestamp
     
     def log_header(self, msg):
+        outputs = msg.split('\n')
         header = self._get_spacer() + "\n"
-        header += f"|{msg.center(self.frame_width)}|\n"
+        for out in outputs:
+            header += f"|{out.center(self.frame_width)}|\n"
         header += self._get_spacer() + "\n"
         print(header)
         self._write_to_file(header)
