@@ -1,0 +1,4 @@
+/build
+/dist
+/logger.egg-info
+Logger/__pycache__

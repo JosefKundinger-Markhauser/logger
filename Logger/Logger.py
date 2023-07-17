@@ -30,6 +30,7 @@ class Logger:
         self._timestamp_format = timestamp_format
         self._log_dir = log_dir
         self._log_file_name = log_file_name
+        self.frame_width = 80
 
     def _format_log(self, msg, prefix):
         timestamp = self.get_timestamp()
@@ -49,12 +50,22 @@ class Logger:
         except Exception as e:
             print(str(e))
 
+    def _get_spacer(self):
+        return "|" + ("-" * self.frame_width) + "|"
+
     def get_timestamp(self):
         if self._timestamp_format is not None:
             timestamp = datetime.now().strftime(self._timestamp_format)
         else:
             timestamp = str(datetime.now())
         return timestamp
+    
+    def log_header(self, msg):
+        header = self._get_spacer() + "\n"
+        header += f"|{msg.center(self.frame_width)}|\n"
+        header += self._get_spacer() + "\n"
+        print(header)
+        self._write_to_file(header)
 
     def log(self, msg):
         out_msg = self._format_log(msg, Prefix.LOG)
