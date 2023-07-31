@@ -2,3 +2,5 @@
 /dist
 /logger.egg-info
 Logger/__pycache__
+.idea
+__pycache__

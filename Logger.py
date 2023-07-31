@@ -69,7 +69,7 @@ class Logger:
         except Exception as e:
             print(str(e))
 
-    def _get_spacer(self):
+    def _get_line(self):
         return "|" + ("-" * self.frame_width) + "|"
 
     def get_timestamp(self):
@@ -81,10 +81,10 @@ class Logger:
     
     def log_header(self, msg):
         outputs = msg.split('\n')
-        header = self._get_spacer() + "\n"
+        header = self._get_line() + "\n"
         for out in outputs:
-            header += f"|{out.center(self.frame_width)}|\n"
-        header += self._get_spacer() + "\n"
+            header += f"|{TextFormat.BOLD}{out.center(self.frame_width)}{TextFormat.ENDC}|\n"
+        header += self._get_line() + "\n"
         print(header)
         self._write_to_file(header)
 

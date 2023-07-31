@@ -1,7 +1,7 @@
 
-from Logger.Logger import Logger
+from Logger import Logger
 
-logger = Logger(debug=True, timestamp_format="%X %x")
+logger = Logger(debug=True, timestamp_format="%x %X")
 
 logger.log_header("Test Header\nHeader second line")
 logger.log("Test Log")
