@@ -1,5 +1,5 @@
 
-from Logger import Logger
+from logger.Logger import Logger
 
 logger = Logger(debug=True, timestamp_format="%x %X")
 
