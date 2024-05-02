@@ -46,18 +46,36 @@ class Prefix:
 class Logger:
 
     def __init__(self, debug=False, timestamp_format=None, log_dir=None,
-                 log_file_name=None):
+                 log_file_name=None, use_timestamp=True, use_prefix=True):
         self._debug = debug
         self._timestamp_format = timestamp_format
         self._log_dir = log_dir
         self._log_file_name = log_file_name
+        self._use_timestamp = use_timestamp
+        self._use_prefix = use_prefix
+
         self.frame_width = 80
 
-    def _format_log(self, msg, prefix):
-        timestamp = self.get_timestamp()
-        return f"{timestamp}---{prefix:8}{Prefix.SEPERATOR:3}{msg}"
+    def _format_log(self, msg: str, prefix: str) -> str:
+        """
+        Formats the log to display properly
+        :param msg: The log message to format
+        :param prefix: The prefix for the log
+        :return: The formatted log message
+        """
+        formatted_log = f"{msg}"
+        if self._use_prefix:
+            formatted_log = f"{prefix:8}{Prefix.SEPERATOR:3}{formatted_log}"
+        if self._use_timestamp:
+            timestamp = self.get_timestamp()
+            formatted_log = f"{timestamp}---{formatted_log}"
+        return formatted_log
 
-    def _write_to_file(self, msg):
+    def _write_to_file(self, msg: str):
+        """
+        Writes the msg to the log file if it exists
+        :param msg: The message to log to the log file
+        """
         if self._log_dir is None:
             return
         if self._log_file_name is None:
@@ -75,17 +93,29 @@ class Logger:
         except Exception as e:
             print(str(e))
 
-    def _get_line(self):
+    def _get_line(self) -> str:
+        """
+        Gets a full separation line for formatting
+        :return: The separation line
+        """
         return "|" + ("-" * self.frame_width) + "|"
 
-    def get_timestamp(self):
+    def get_timestamp(self) -> str:
+        """
+        Gets a formatted timestamp for the current time
+        :return: the formatted timestamp as str
+        """
         if self._timestamp_format is not None:
             timestamp = datetime.now().strftime(self._timestamp_format)
         else:
             timestamp = str(datetime.now())
         return timestamp
     
-    def log_header(self, msg):
+    def log_header(self, msg: str):
+        """
+        Logs a message as a header message
+        :param msg: The message to log
+        """
         outputs = msg.split('\n')
         header = self._get_line() + "\n"
         for out in outputs:
@@ -95,23 +125,39 @@ class Logger:
         print(header)
         self._write_to_file(header)
 
-    def log(self, msg):
+    def log(self, msg: str):
+        """
+        Logs a message
+        :param msg: The message to log
+        """
         out_msg = self._format_log(msg, Prefix.LOG)
         print(out_msg)
         self._write_to_file(out_msg)
 
-    def debug(self, msg):
+    def debug(self, msg: str):
+        """
+        Logs a debug message that is only displayed if debug is set to true
+        :param msg: The debug message to log
+        """
         out_msg = self._format_log(msg, Prefix.DEBUG)
         if self._debug:
             print(TextFormat.OKBLUE + out_msg + TextFormat.ENDC)
         self._write_to_file(out_msg)
 
-    def warning(self, msg):
+    def warning(self, msg: str):
+        """
+        Logs a warning message which is displayed is yellow
+        :param msg: The message to log
+        """
         out_msg = self._format_log(msg, Prefix.WARNING)
         print(TextFormat.WARNING + out_msg + TextFormat.ENDC)
         self._write_to_file(out_msg)
 
-    def error(self, msg):
+    def error(self, msg: str):
+        """
+        Logs an error message which is displayed in red
+        :param msg: The message to log
+        """
         out_msg = self._format_log(msg, Prefix.ERROR)
         print(TextFormat.FAIL + out_msg + TextFormat.ENDC)
         self._write_to_file(out_msg)
