@@ -32,6 +32,8 @@ class TextFormat:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+    ALL = [HEADER, OKBLUE, OKCYAN, OKGREEN, WARNING, FAIL, ENDC, BOLD, UNDERLINE]
+
 
 class Prefix:
     LOG = "LOG"
@@ -62,9 +64,13 @@ class Logger:
             self._log_file_name = self.get_timestamp().replace(":", "_")\
                 .replace(" ", "_").replace("/", "_")
         full_path = os.path.join(self._log_dir, self._log_file_name)
+        if not os.path.exists(self._log_dir):
+            os.makedirs(self._log_dir)
         try:
-            with open(full_path, "a") as f:
-                f.write(msg + "\n")
+            for text in TextFormat.ALL:
+                msg = msg.replace(text, '')
+            with open(full_path, "a+") as f:
+                f.write(str(msg) + "\n")
                 f.close()
         except Exception as e:
             print(str(e))
@@ -83,7 +89,8 @@ class Logger:
         outputs = msg.split('\n')
         header = self._get_line() + "\n"
         for out in outputs:
-            header += f"|{TextFormat.BOLD}{out.center(self.frame_width)}{TextFormat.ENDC}|\n"
+            header += (f"|{TextFormat.BOLD}{out.center(self.frame_width)}"
+                       f"{TextFormat.ENDC}|\n")
         header += self._get_line() + "\n"
         print(header)
         self._write_to_file(header)
@@ -108,6 +115,3 @@ class Logger:
         out_msg = self._format_log(msg, Prefix.ERROR)
         print(TextFormat.FAIL + out_msg + TextFormat.ENDC)
         self._write_to_file(out_msg)
-
-
-
